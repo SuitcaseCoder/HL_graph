@@ -12,16 +12,30 @@ var chart = new Chart(ctx, {
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
             data: [5.0, 6.7, 8.3, 10.0, 11.5, 12.9, 14.3, 15.7]
-            // data: []
           }]
     },
 
     // Configuration options go here
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+            display: true,
+            ticks: {
+              max: 120000,
+              min: 0
+                // suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                // OR //
+                // beginAtZero: true   // minimum value will be 0.
+            }
+        }]
+      },
       title: {
         display: true,
         text: 'Con Lucas. % Acumulado con el pago del Alquiler'
-      }
+      },
+
     }
 });
 
@@ -85,6 +99,7 @@ function listenTextChange(textInput){
       textInput = $("input[type='text']").val();
       $("input[type='range']").val(textInput);
       $("input[type='range']").trigger('change');
+      // chart.update();
   })
 
 }
@@ -106,34 +121,23 @@ function setUpGraph(creditAnnual, buyerPriceY3){
     tenantEquityYears.push(Math.round(yZeroTenantEquity + creditAnnual * i));
   } 
 
-  iterateTenEqYrs(tenantEquityYears)
-
-  console.log('tenEqYrs AFTER loop ' + tenantEquityYears);
-  
-  // console.log('dataset: ' + chart.data.datasets.data);
-
-  chart.data.datasets.data = tenantEquityYears;
-
-  chart.update();
-  console.log('dataset: ' + chart.data.datasets.data);
-};
-
-function iterateTenEqYrs(tenantEquityYears){
-  console.log(tenantEquityYears[3]);
   console.log(chart.data.datasets[0].data);
+  console.log(tenantEquityYears);
+  chart.data.datasets[0].data.splice(0,8);
+  console.log('should be empty:  ' + chart.data.datasets[0].data);
   for(let i=0; i<tenantEquityYears.length; i++){
-    chart.data.datasets[0].data.push(i);
-    console.log('i is: ' + i);
+    // chart.data.datasets[0].data.splice(0,8, tenantEquityYears[i] );
+    chart.data.datasets[0].data.push(tenantEquityYears[i]);
+    // console.log('num getting pushed to data array:  ' + chart.data.datasets[0].data);
   }
 
-  console.log('datasetafterpushingtoarray -----> ' + chart.data.datasets.data);
-  
-}
+  console.log('should be array of new numbers: ' + chart.data.datasets[0].data);
 
+  chart.update();
+};
 
-
+console.log();
 
 
 listenTextChange();
 onSub();
-
